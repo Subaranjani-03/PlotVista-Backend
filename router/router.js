@@ -55,6 +55,6 @@ router.put(
   bookingController.assignAgentToBooking,
 );
 router.put("/bookings/visit-status/:id", bookingController.updateVisitStatus);
-router.put("/schedule-visit/:id", bookingController.scheduleVisit); //SCHEDULE
+router.put("/bookings/schedule-visit/:id", bookingController.scheduleVisit); //SCHEDULE
 
 module.exports = router;
