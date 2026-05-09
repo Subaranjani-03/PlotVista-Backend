@@ -157,6 +157,7 @@ exports.getAgentBookings = async (req, res) => {
 exports.assignAgentToBooking = async (req, res) => {
   try {
     const bookingId = req.params.id;
+
     const { agentId } = req.body;
 
     const booking = await Booking.findById(bookingId);
@@ -168,6 +169,20 @@ exports.assignAgentToBooking = async (req, res) => {
       });
     }
 
+    // UNASSIGN
+    if (agentId === null) {
+      booking.assignedAgent = null;
+
+      await booking.save();
+
+      return res.json({
+        status: true,
+        message: "Agent unassigned successfully",
+        data: booking,
+      });
+    }
+
+    // CHECK AGENT
     const agent = await User.findOne({
       _id: agentId,
       role: "agent",
@@ -190,13 +205,14 @@ exports.assignAgentToBooking = async (req, res) => {
       data: booking,
     });
   } catch (err) {
-    res.json({
+    console.log(err);
+
+    res.status(500).json({
       status: false,
       message: err.message,
     });
   }
 };
-
 // ================= UPDATE VISIT STATUS =================
 
 exports.updateVisitStatus = async (req, res) => {
@@ -269,12 +285,14 @@ exports.scheduleVisit = async (req, res) => {
 
     const { visitDate } = req.body;
 
+    const formattedDate = new Date(visitDate);
+
     const booking = await Booking.findByIdAndUpdate(
       bookingId,
       {
-        visitDate,
+        visitDate: formattedDate,
       },
-      { new: true }
+      { new: true },
     );
 
     res.json({
@@ -282,13 +300,12 @@ exports.scheduleVisit = async (req, res) => {
       message: "Visit scheduled successfully",
       data: booking,
     });
-
   } catch (err) {
+    console.log(err);
 
-    res.json({
+    res.status(500).json({
       status: false,
       message: err.message,
     });
-
   }
 };
