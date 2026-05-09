@@ -4,7 +4,7 @@ const router = express.Router();
 /* CONTROLLERS */
 const auth = require("../controller/authController");
 const plotController = require("../controller/plotController");
-const bookingController = require("../controller/bookingController");
+// const bookingController = require("../controller/bookingController");
 
 /* MULTER*/
 const multer = require("multer");
@@ -44,16 +44,5 @@ router.post("/plots/assign/:id", plotController.assignAgentToPlot);
 
 // BOOKINGS
 
-router.post("/bookings/create", bookingController.createBooking);
-router.get("/bookings/my-bookings/:userId", bookingController.getMyBookings);
-router.put("/bookings/cancel/:id", bookingController.cancelBooking);
-router.get("/bookings", bookingController.getAllBookings); // ADMIN BOOKINGS
-router.get("/bookings/agent/:agentId", bookingController.getAgentBookings); // AGENT BOOKINGS
-router.get("/agent-customers/:agentId", bookingController.getAgentCustomers);
-router.put(
-  "/bookings/assign-agent/:id",
-  bookingController.assignAgentToBooking,
-);
-router.put("/bookings/visit-status/:id", bookingController.updateVisitStatus);
 
 module.exports = router;
