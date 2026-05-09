@@ -260,3 +260,35 @@ exports.getAgentCustomers = async (req, res) => {
     });
   }
 };
+
+// ================= SCHEDULE VISIT =================
+
+exports.scheduleVisit = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    const { visitDate } = req.body;
+
+    const booking = await Booking.findByIdAndUpdate(
+      bookingId,
+      {
+        visitDate,
+      },
+      { new: true }
+    );
+
+    res.json({
+      status: true,
+      message: "Visit scheduled successfully",
+      data: booking,
+    });
+
+  } catch (err) {
+
+    res.json({
+      status: false,
+      message: err.message,
+    });
+
+  }
+};
