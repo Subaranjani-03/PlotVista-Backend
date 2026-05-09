@@ -11,18 +11,6 @@ exports.createBooking = async (req, res) => {
   try {
     const { userId, plotId } = req.body;
 
-    const validUser = await User.findOne({
-      _id: userId,
-      role: "user",
-    });
-
-    if (!validUser) {
-      return res.json({
-        status: false,
-        message: "Invalid customer",
-      });
-    }
-
     // CHECK ALREADY BOOKED BY SAME USER
     const existing = await Booking.findOne({
       userId,
@@ -51,7 +39,7 @@ exports.createBooking = async (req, res) => {
 
     const booking = new Booking({
       bookingId: generateBookingId(),
-      userId: validUser._id,
+      userId,
       plotId,
       assignedAgent: plot.assignedAgent || null,
     });
