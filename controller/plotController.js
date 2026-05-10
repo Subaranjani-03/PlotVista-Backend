@@ -12,7 +12,7 @@ exports.createPlot = async (req, res) => {
 
     const plot = new Plot({
       ...req.body,
-      documents: filePaths, // SAVE FILE PATHS
+      documents: filePaths, // SAVE FILE
     });
 
     await plot.save();
