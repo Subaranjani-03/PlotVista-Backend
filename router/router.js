@@ -53,4 +53,7 @@ router.put("/bookings/assign-agent/:id", bookingController.assignAgentToBooking)
 router.put("/bookings/visit-status/:id", bookingController.updateVisitStatus);
 router.put("/bookings/schedule-visit/:id", bookingController.scheduleVisit); //SCHEDULE
 
+//PAYMENT
+router.put("/bookings/payment/:id", bookingController.makePayment);
+
 module.exports = router;

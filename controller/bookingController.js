@@ -341,3 +341,41 @@ exports.scheduleVisit = async (req, res) => {
     });
   }
 };
+
+
+// ================= MAKE PAYMENT =================
+
+exports.makePayment = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    const booking = await Booking.findByIdAndUpdate(
+      bookingId,
+      {
+        paymentStatus: "Paid",
+        paymentDate: new Date(),
+      },
+      { new: true },
+    );
+
+    if (!booking) {
+      return res.json({
+        status: false,
+        message: "Booking not found",
+      });
+    }
+
+    res.json({
+      status: true,
+      message: "Payment completed successfully",
+      data: booking,
+    });
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      status: false,
+      message: err.message,
+    });
+  }
+};
