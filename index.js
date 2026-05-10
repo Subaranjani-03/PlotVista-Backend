@@ -3,22 +3,38 @@ const app = express();
 const port = 6999;
 
 const db = require("./dbconfig/config");
-
 const router = require("./router/router");
 
 const cors = require("cors");
 
-const dns = require("dns")
-dns.setServers(["1.1.1.1","8.8.8.8"])
+const dns = require("dns");
 
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
+/* CORS */
+
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "key"],
+  })
+);
+
+app.options("*", cors());
+
+/* BODY PARSER */
 
 app.use(express.json());
-
-app.use(cors());
 
 /* AUTHORIZATION MIDDLEWARE */
 
 app.use((req, res, next) => {
+  // Allow preflight requests
+  if (req.method === "OPTIONS") {
+    return next();
+  }
+
   const publicRoutes = ["/login", "/register"];
 
   if (publicRoutes.includes(req.path)) {
@@ -44,5 +60,5 @@ app.use("/", router);
 /* SERVER */
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running at http://localhost:${port}`);
 });
