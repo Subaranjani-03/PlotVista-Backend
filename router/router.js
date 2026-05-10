@@ -39,7 +39,6 @@ router.post("/plots", upload.array("documents"), plotController.createPlot);
 router.get("/plots", plotController.getPlots);
 router.put("/plots/:id", upload.array("documents"), plotController.updatePlot);
 router.delete("/plots/:id", plotController.deletePlot);
-
 router.post("/plots/assign/:id", plotController.assignAgentToPlot);
 
 // BOOKINGS
@@ -50,10 +49,7 @@ router.put("/bookings/cancel/:id", bookingController.cancelBooking);
 router.get("/bookings", bookingController.getAllBookings); // ADMIN BOOKINGS
 router.get("/bookings/agent/:agentId", bookingController.getAgentBookings); // AGENT BOOKINGS
 router.get("/agent-customers/:agentId", bookingController.getAgentCustomers);
-router.put(
-  "/bookings/assign-agent/:id",
-  bookingController.assignAgentToBooking,
-);
+router.put("/bookings/assign-agent/:id", bookingController.assignAgentToBooking);
 router.put("/bookings/visit-status/:id", bookingController.updateVisitStatus);
 router.put("/bookings/schedule-visit/:id", bookingController.scheduleVisit); //SCHEDULE
 
