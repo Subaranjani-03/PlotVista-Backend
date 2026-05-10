@@ -98,7 +98,7 @@ exports.getMyBookings = async (req, res) => {
 
     const bookings = await Booking.find({ userId })
       .populate("plotId")
-      .populate("assignedAgent", "name phone")
+      .populate("assignedAgent", "name phone experience")
       .sort({ createdAt: -1 });
 
     res.json({
@@ -144,7 +144,7 @@ exports.getAllBookings = async (req, res) => {
     const bookings = await Booking.find()
       .populate("plotId")
       .populate("userId", "name email")
-      .populate("assignedAgent", "name phone")
+      .populate("assignedAgent", "name phone experience")
       .sort({ createdAt: -1 });
 
     res.json({
@@ -169,7 +169,7 @@ exports.getAgentBookings = async (req, res) => {
     })
       .populate("plotId")
       .populate("userId", "name email phone")
-      .populate("assignedAgent", "name phone")
+      .populate("assignedAgent", "name phone experience")
       .sort({ createdAt: -1 });
 
     res.json({
