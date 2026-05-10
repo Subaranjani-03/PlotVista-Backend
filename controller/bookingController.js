@@ -13,16 +13,17 @@ exports.createBooking = async (req, res) => {
 
     // ================= CHECK USER ALREADY BOOKED =================
 
-    const existingBooking = await Booking.findOne({
+    const existingUserBooking = await Booking.findOne({
       userId,
       status: { $ne: "Cancelled" },
     }).populate("plotId");
 
-    if (existingBooking) {
+    if (existingUserBooking) {
+
       // SAME PLOT
       if (
-        existingBooking.plotId &&
-        existingBooking.plotId._id.toString() === plotId
+        existingUserBooking.plotId &&
+        existingUserBooking.plotId._id.toString() === plotId
       ) {
         return res.json({
           status: false,
@@ -34,6 +35,20 @@ exports.createBooking = async (req, res) => {
       return res.json({
         status: false,
         message: "You already booked another plot",
+      });
+    }
+
+    // ================= CHECK PLOT ALREADY BOOKED =================
+
+    const existingPlotBooking = await Booking.findOne({
+      plotId,
+      status: { $ne: "Cancelled" },
+    });
+
+    if (existingPlotBooking) {
+      return res.json({
+        status: false,
+        message: "This plot is already booked by another customer",
       });
     }
 
@@ -67,6 +82,7 @@ exports.createBooking = async (req, res) => {
       message: "Booking created successfully",
       data: booking,
     });
+
   } catch (err) {
     res.json({
       status: false,
