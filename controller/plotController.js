@@ -5,15 +5,25 @@ const User = require("../models/User");
 
 exports.createPlot = async (req, res) => {
   try {
-    // get uploaded files
+
     const files = req.files || [];
 
     const filePaths = files.map((file) => file.path);
 
-    const plot = new Plot({
+    const plotData = {
       ...req.body,
-      documents: filePaths, // SAVE FILE
-    });
+      documents: filePaths,
+    };
+
+    // FIX
+    if (
+      plotData.assignedAgent === "null" ||
+      plotData.assignedAgent === ""
+    ) {
+      plotData.assignedAgent = null;
+    }
+
+    const plot = new Plot(plotData);
 
     await plot.save();
 
@@ -22,11 +32,14 @@ exports.createPlot = async (req, res) => {
       message: "Plot created successfully",
       data: plot,
     });
+
   } catch (err) {
+
     res.json({
       status: false,
       message: err.message,
     });
+
   }
 };
 
@@ -56,7 +69,10 @@ exports.updatePlot = async (req, res) => {
     let updateData = { ...req.body };
 
     // FIX HERE
-    if (updateData.assignedAgent === "null") {
+    if (
+      updateData.assignedAgent === "null" ||
+      updateData.assignedAgent === ""
+    ) {
       updateData.assignedAgent = null;
     }
 
