@@ -11,19 +11,33 @@ exports.createBooking = async (req, res) => {
   try {
     const { userId, plotId } = req.body;
 
-    // CHECK ALREADY BOOKED BY SAME USER
-    const existing = await Booking.findOne({
-      userId,
-      plotId,
-      status: { $ne: "Cancelled" },
-    });
+    // ================= CHECK USER ALREADY BOOKED =================
 
-    if (existing) {
+    const existingBooking = await Booking.findOne({
+      userId,
+      status: { $ne: "Cancelled" },
+    }).populate("plotId");
+
+    if (existingBooking) {
+      // SAME PLOT
+      if (
+        existingBooking.plotId &&
+        existingBooking.plotId._id.toString() === plotId
+      ) {
+        return res.json({
+          status: false,
+          message: "You already booked this plot",
+        });
+      }
+
+      // ANOTHER PLOT
       return res.json({
         status: false,
-        message: "Plot already booked",
+        message: "You already booked another plot",
       });
     }
+
+    // ================= CHECK PLOT EXISTS =================
 
     const plot = await Plot.findById(plotId).populate(
       "assignedAgent",
@@ -36,6 +50,8 @@ exports.createBooking = async (req, res) => {
         message: "Plot not found",
       });
     }
+
+    // ================= CREATE BOOKING =================
 
     const booking = new Booking({
       bookingId: generateBookingId(),
