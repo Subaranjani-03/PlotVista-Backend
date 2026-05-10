@@ -11,7 +11,7 @@ const dns = require("dns");
 
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
-/* CORS */
+/* ================= CORS ================= */
 
 app.use(
   cors({
@@ -21,13 +21,11 @@ app.use(
   })
 );
 
-app.options("*", cors());
-
-/* BODY PARSER */
+/* ================= BODY PARSER ================= */
 
 app.use(express.json());
 
-/* AUTHORIZATION MIDDLEWARE */
+/* ================= AUTHORIZATION MIDDLEWARE ================= */
 
 app.use((req, res, next) => {
   // Allow preflight requests
@@ -53,11 +51,11 @@ app.use((req, res, next) => {
   });
 });
 
-/* ROUTES */
+/* ================= ROUTES ================= */
 
 app.use("/", router);
 
-/* SERVER */
+/* ================= SERVER ================= */
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
