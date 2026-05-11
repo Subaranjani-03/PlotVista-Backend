@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      match: [/^[0-9]{10}$/, "Phone number must be 10 digits"],
+      match: [/^[6-9]\d{9}$/, "Enter a valid Indian mobile number"],
     },
 
     email: {
