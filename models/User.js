@@ -13,15 +13,15 @@ const userSchema = new mongoose.Schema(
       required: [true, "Name is required"],
       minlength: [3, "Name must be at least 3 characters"],
       maxlength: [30, "Name cannot exceed 30 characters"],
+      match: [/^[A-Za-z ]+$/, "Name must contain only letters"],
       trim: true,
     },
 
     phone: {
       type: String,
-      required: [true, "Phone number is required"],
+      required: true,
       unique: true,
-      minlength: [10, "Phone number must be 10 digits"],
-      maxlength: [10, "Phone number must be 10 digits"],
+      match: [/^[0-9]{10}$/, "Phone number must be 10 digits"],
     },
 
     email: {
@@ -30,7 +30,10 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
-      match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"],
+      match: [
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        "Please enter a valid email address",
+      ],
     },
 
     password: {

@@ -26,16 +26,19 @@ const plotSchema = new mongoose.Schema(
     zone: {
       type: String,
       required: true,
+      trim: true,
     },
 
     projectName: {
       type: String,
       required: true,
+      trim: true,
     },
 
     address: {
       type: String,
       required: true,
+      trim: true,
     },
 
     plotImage: {
@@ -46,21 +49,25 @@ const plotSchema = new mongoose.Schema(
     state: {
       type: String,
       required: true,
+      trim: true,
     },
 
     district: {
       type: String,
       required: true,
+      trim: true,
     },
 
     city: {
       type: String,
       required: true,
+      trim: true,
     },
 
     area: {
       type: String,
       required: true,
+      trim: true,
     },
 
     pincode: {
@@ -130,6 +137,7 @@ const plotSchema = new mongoose.Schema(
     remarks: {
       type: String,
       default: "",
+      trim: true,
     },
 
     documents: [
