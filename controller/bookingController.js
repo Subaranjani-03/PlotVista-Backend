@@ -409,17 +409,15 @@ exports.updateRemarks = async (req, res) => {
 
 // ================= UPDATE BOOKING STATUS =================
 
+// ================= UPDATE BOOKING STATUS =================
+
 exports.updateBookingStatus = async (req, res) => {
   try {
     const bookingId = req.params.id;
 
     const { status } = req.body;
 
-    const booking = await Booking.findByIdAndUpdate(
-      bookingId,
-      { status },
-      { new: true }
-    );
+    const booking = await Booking.findById(bookingId);
 
     if (!booking) {
       return res.json({
@@ -428,17 +426,42 @@ exports.updateBookingStatus = async (req, res) => {
       });
     }
 
+    // ================= IF CANCELLED =================
+
+    if (status === "Cancelled") {
+
+      // RELEASE AGENT
+      booking.assignedAgent = null;
+
+      // RESET PAYMENT
+      booking.paymentStatus = "Pending";
+
+      // RESET VISIT
+      booking.visitStatus = "Pending";
+
+      booking.visited = false;
+
+      booking.visitDate = null;
+    }
+
+    booking.status = status;
+
+    await booking.save();
+
     res.json({
       status: true,
       message: "Booking status updated",
       data: booking,
     });
+
   } catch (err) {
+
     console.log(err);
 
     res.status(500).json({
       status: false,
       message: err.message,
     });
+
   }
 };
