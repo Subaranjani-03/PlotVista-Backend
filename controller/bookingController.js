@@ -45,7 +45,7 @@ exports.createBooking = async (req, res) => {
 
     const plot = await Plot.findById(plotId).populate(
       "assignedAgent",
-      "name phone"
+      "name phone",
     );
 
     if (!plot) {
@@ -87,16 +87,13 @@ exports.createBooking = async (req, res) => {
       message: "Booking created successfully",
       data: booking,
     });
-
   } catch (err) {
-
     console.log(err);
 
     res.status(500).json({
       status: false,
       message: err.message,
     });
-
   }
 };
 
@@ -104,7 +101,6 @@ exports.createBooking = async (req, res) => {
 
 exports.getMyBookings = async (req, res) => {
   try {
-
     const userId = req.params.userId;
 
     const bookings = await Booking.find({ userId })
@@ -116,14 +112,11 @@ exports.getMyBookings = async (req, res) => {
       status: true,
       data: bookings,
     });
-
   } catch (err) {
-
     res.json({
       status: false,
       message: err.message,
     });
-
   }
 };
 
@@ -131,7 +124,6 @@ exports.getMyBookings = async (req, res) => {
 
 exports.cancelBooking = async (req, res) => {
   try {
-
     const booking = await Booking.findById(req.params.id);
 
     if (!booking) {
@@ -156,16 +148,13 @@ exports.cancelBooking = async (req, res) => {
       status: true,
       message: "Booking removed successfully",
     });
-
   } catch (err) {
-
     console.log(err);
 
     res.status(500).json({
       status: false,
       message: err.message,
     });
-
   }
 };
 
@@ -173,7 +162,6 @@ exports.cancelBooking = async (req, res) => {
 
 exports.getAllBookings = async (req, res) => {
   try {
-
     const bookings = await Booking.find()
       .populate("plotId")
       .populate("userId", "name email")
@@ -184,14 +172,11 @@ exports.getAllBookings = async (req, res) => {
       status: true,
       data: bookings,
     });
-
   } catch (err) {
-
     res.json({
       status: false,
       message: err.message,
     });
-
   }
 };
 
@@ -199,7 +184,6 @@ exports.getAllBookings = async (req, res) => {
 
 exports.getAgentBookings = async (req, res) => {
   try {
-
     const agentId = req.params.agentId;
 
     const bookings = await Booking.find({
@@ -214,14 +198,11 @@ exports.getAgentBookings = async (req, res) => {
       status: true,
       data: bookings,
     });
-
   } catch (err) {
-
     res.json({
       status: false,
       message: err.message,
     });
-
   }
 };
 
@@ -229,7 +210,6 @@ exports.getAgentBookings = async (req, res) => {
 
 exports.assignAgentToBooking = async (req, res) => {
   try {
-
     const bookingId = req.params.id;
 
     const { agentId } = req.body;
@@ -246,7 +226,6 @@ exports.assignAgentToBooking = async (req, res) => {
     // UNASSIGN
 
     if (agentId === null) {
-
       booking.assignedAgent = null;
 
       await booking.save();
@@ -291,16 +270,13 @@ exports.assignAgentToBooking = async (req, res) => {
       message: "Agent assigned successfully",
       data: booking,
     });
-
   } catch (err) {
-
     console.log(err);
 
     res.status(500).json({
       status: false,
       message: err.message,
     });
-
   }
 };
 
@@ -308,7 +284,6 @@ exports.assignAgentToBooking = async (req, res) => {
 
 exports.updateVisitStatus = async (req, res) => {
   try {
-
     const bookingId = req.params.id;
 
     const { visitStatus } = req.body;
@@ -319,7 +294,7 @@ exports.updateVisitStatus = async (req, res) => {
         visitStatus,
         visited: visitStatus === "Visited",
       },
-      { new: true }
+      { new: true },
     );
 
     res.json({
@@ -327,14 +302,11 @@ exports.updateVisitStatus = async (req, res) => {
       message: "Visit status updated",
       data: booking,
     });
-
   } catch (err) {
-
     res.json({
       status: false,
       message: err.message,
     });
-
   }
 };
 
@@ -342,7 +314,6 @@ exports.updateVisitStatus = async (req, res) => {
 
 exports.getAgentCustomers = async (req, res) => {
   try {
-
     const agentId = req.params.agentId;
 
     const bookings = await Booking.find({
@@ -354,32 +325,22 @@ exports.getAgentCustomers = async (req, res) => {
     const customerIds = new Set();
 
     bookings.forEach((booking) => {
-
-      if (
-        booking.userId &&
-        !customerIds.has(booking.userId._id.toString())
-      ) {
-
+      if (booking.userId && !customerIds.has(booking.userId._id.toString())) {
         customerIds.add(booking.userId._id.toString());
 
         uniqueCustomers.push(booking.userId);
-
       }
-
     });
 
     res.json({
       status: true,
       data: uniqueCustomers,
     });
-
   } catch (err) {
-
     res.json({
       status: false,
       message: err.message,
     });
-
   }
 };
 
@@ -387,7 +348,6 @@ exports.getAgentCustomers = async (req, res) => {
 
 exports.scheduleVisit = async (req, res) => {
   try {
-
     const bookingId = req.params.id;
 
     const { visitDate } = req.body;
@@ -400,7 +360,7 @@ exports.scheduleVisit = async (req, res) => {
         visitDate: formattedDate,
         status: "Scheduled",
       },
-      { new: true }
+      { new: true },
     );
 
     res.json({
@@ -408,24 +368,22 @@ exports.scheduleVisit = async (req, res) => {
       message: "Visit scheduled successfully",
       data: booking,
     });
-
   } catch (err) {
-
     console.log(err);
 
     res.status(500).json({
       status: false,
       message: err.message,
     });
-
   }
 };
 
 // ================= MAKE PAYMENT =================
 
+// ================= MAKE PAYMENT =================
+
 exports.makePayment = async (req, res) => {
   try {
-
     const bookingId = req.params.id;
 
     const booking = await Booking.findById(bookingId);
@@ -446,7 +404,7 @@ exports.makePayment = async (req, res) => {
       });
     }
 
-    // UPDATE BOOKING
+    // PAYMENT UPDATE
 
     booking.paymentStatus = "Paid";
 
@@ -454,12 +412,18 @@ exports.makePayment = async (req, res) => {
 
     booking.status = "Approved";
 
+    // RELEASE AGENT FROM BOOKING
+    booking.assignedAgent = null;
+
     await booking.save();
 
-    // UPDATE PLOT STATUS => SOLD
+    // UPDATE PLOT
 
     await Plot.findByIdAndUpdate(booking.plotId, {
       status: "Sold",
+
+      // RELEASE AGENT FROM PLOT
+      assignedAgent: null,
     });
 
     res.json({
@@ -467,24 +431,19 @@ exports.makePayment = async (req, res) => {
       message: "Payment completed successfully",
       data: booking,
     });
-
   } catch (err) {
-
     console.log(err);
 
     res.status(500).json({
       status: false,
       message: err.message,
     });
-
   }
 };
-
 // ================= UPDATE REMARKS =================
 
 exports.updateRemarks = async (req, res) => {
   try {
-
     const bookingId = req.params.id;
 
     const { remarks } = req.body;
@@ -494,7 +453,7 @@ exports.updateRemarks = async (req, res) => {
       {
         remarks,
       },
-      { new: true }
+      { new: true },
     );
 
     res.json({
@@ -502,16 +461,13 @@ exports.updateRemarks = async (req, res) => {
       message: "Remarks updated successfully",
       data: booking,
     });
-
   } catch (err) {
-
     console.log(err);
 
     res.status(500).json({
       status: false,
       message: err.message,
     });
-
   }
 };
 
@@ -519,7 +475,6 @@ exports.updateRemarks = async (req, res) => {
 
 exports.updateBookingStatus = async (req, res) => {
   try {
-
     const bookingId = req.params.id;
 
     const { status } = req.body;
@@ -536,7 +491,6 @@ exports.updateBookingStatus = async (req, res) => {
     // ================= CANCELLED =================
 
     if (status === "Cancelled") {
-
       // RESET BOOKING
 
       booking.assignedAgent = null;
@@ -555,17 +509,19 @@ exports.updateBookingStatus = async (req, res) => {
         status: "Available",
         assignedAgent: null,
       });
-
     }
 
     // ================= APPROVED =================
 
     if (status === "Approved") {
+      // RELEASE AGENT
+      booking.assignedAgent = null;
 
+      // UPDATE PLOT
       await Plot.findByIdAndUpdate(booking.plotId, {
         status: "Sold",
+        assignedAgent: null,
       });
-
     }
 
     // ================= PENDING / ASSIGNED / SCHEDULED =================
@@ -575,11 +531,9 @@ exports.updateBookingStatus = async (req, res) => {
       status === "Assigned" ||
       status === "Scheduled"
     ) {
-
       await Plot.findByIdAndUpdate(booking.plotId, {
         status: "Booked",
       });
-
     }
 
     booking.status = status;
@@ -591,15 +545,12 @@ exports.updateBookingStatus = async (req, res) => {
       message: "Booking status updated",
       data: booking,
     });
-
   } catch (err) {
-
     console.log(err);
 
     res.status(500).json({
       status: false,
       message: err.message,
     });
-
   }
 };
