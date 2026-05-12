@@ -114,28 +114,24 @@ exports.cancelBooking = async (req, res) => {
       });
     }
 
-    booking.status = "Cancelled";
-
-    // OPTIONAL CLEANUP
-    booking.assignedAgent = null;
-    booking.visitDate = null;
-    booking.visitStatus = "Pending";
-    booking.paymentStatus = "Pending";
-
-    await booking.save();
+    // DELETE BOOKING
+    await Booking.findByIdAndDelete(req.params.id);
 
     res.json({
       status: true,
-      message: "Booking cancelled successfully",
-      data: booking,
+      message: "Booking removed successfully",
     });
   } catch (err) {
-    res.json({
+    console.log(err);
+
+    res.status(500).json({
       status: false,
       message: err.message,
     });
   }
 };
+
+
 // ================= GET ALL BOOKINGS (ADMIN) =================
 
 exports.getAllBookings = async (req, res) => {
