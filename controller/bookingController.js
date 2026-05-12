@@ -105,17 +105,28 @@ exports.getMyBookings = async (req, res) => {
 // ================= CANCEL BOOKING =================
 exports.cancelBooking = async (req, res) => {
   try {
-    const booking = await Booking.findByIdAndUpdate(
-      req.params.id,
-      {
-        status: "Cancelled",
-      },
-      { new: true }
-    );
+    const booking = await Booking.findById(req.params.id);
+
+    if (!booking) {
+      return res.json({
+        status: false,
+        message: "Booking not found",
+      });
+    }
+
+    booking.status = "Cancelled";
+
+    // OPTIONAL CLEANUP
+    booking.assignedAgent = null;
+    booking.visitDate = null;
+    booking.visitStatus = "Pending";
+    booking.paymentStatus = "Pending";
+
+    await booking.save();
 
     res.json({
       status: true,
-      message: "Booking cancelled",
+      message: "Booking cancelled successfully",
       data: booking,
     });
   } catch (err) {
@@ -125,7 +136,6 @@ exports.cancelBooking = async (req, res) => {
     });
   }
 };
-
 // ================= GET ALL BOOKINGS (ADMIN) =================
 
 exports.getAllBookings = async (req, res) => {
