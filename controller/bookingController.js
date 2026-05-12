@@ -406,3 +406,39 @@ exports.updateRemarks = async (req, res) => {
     });
   }
 };
+
+// ================= UPDATE BOOKING STATUS =================
+
+exports.updateBookingStatus = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    const { status } = req.body;
+
+    const booking = await Booking.findByIdAndUpdate(
+      bookingId,
+      { status },
+      { new: true }
+    );
+
+    if (!booking) {
+      return res.json({
+        status: false,
+        message: "Booking not found",
+      });
+    }
+
+    res.json({
+      status: true,
+      message: "Booking status updated",
+      data: booking,
+    });
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      status: false,
+      message: err.message,
+    });
+  }
+};
