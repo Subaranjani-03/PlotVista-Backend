@@ -11,34 +11,22 @@ exports.createBooking = async (req, res) => {
   try {
     const { userId, plotId } = req.body;
 
-    // ================= CHECK USER ALREADY BOOKED =================
+    // ================= CHECK SAME PLOT ALREADY BOOKED =================
 
-    const existingUserBooking = await Booking.findOne({
+    const existingBooking = await Booking.findOne({
       userId,
+      plotId,
       status: { $ne: "Cancelled" },
-    }).populate("plotId");
+    });
 
-    if (existingUserBooking) {
-
-      // SAME PLOT
-      if (
-        existingUserBooking.plotId &&
-        existingUserBooking.plotId._id.toString() === plotId
-      ) {
-        return res.json({
-          status: false,
-          message: "You already booked this plot",
-        });
-      }
-
-      // ANOTHER PLOT
+    if (existingBooking) {
       return res.json({
         status: false,
-        message: "You already booked another plot",
+        message: "You already booked this plot",
       });
     }
 
-    // ================= CHECK PLOT ALREADY BOOKED =================
+    // ================= CHECK PLOT ALREADY BOOKED BY ANOTHER USER =================
 
     const existingPlotBooking = await Booking.findOne({
       plotId,
@@ -56,7 +44,7 @@ exports.createBooking = async (req, res) => {
 
     const plot = await Plot.findById(plotId).populate(
       "assignedAgent",
-      "name phone",
+      "name phone"
     );
 
     if (!plot) {
@@ -82,9 +70,10 @@ exports.createBooking = async (req, res) => {
       message: "Booking created successfully",
       data: booking,
     });
-
   } catch (err) {
-    res.json({
+    console.log(err);
+
+    res.status(500).json({
       status: false,
       message: err.message,
     });
@@ -121,7 +110,7 @@ exports.cancelBooking = async (req, res) => {
       {
         status: "Cancelled",
       },
-      { new: true },
+      { new: true }
     );
 
     res.json({
@@ -245,6 +234,7 @@ exports.assignAgentToBooking = async (req, res) => {
     });
   }
 };
+
 // ================= UPDATE VISIT STATUS =================
 
 exports.updateVisitStatus = async (req, res) => {
@@ -259,7 +249,7 @@ exports.updateVisitStatus = async (req, res) => {
         visitStatus,
         visited: visitStatus === "Visited",
       },
-      { new: true },
+      { new: true }
     );
 
     res.json({
@@ -276,6 +266,7 @@ exports.updateVisitStatus = async (req, res) => {
 };
 
 // ================= AGENT CUSTOMERS =================
+
 exports.getAgentCustomers = async (req, res) => {
   try {
     const agentId = req.params.agentId;
@@ -324,7 +315,7 @@ exports.scheduleVisit = async (req, res) => {
       {
         visitDate: formattedDate,
       },
-      { new: true },
+      { new: true }
     );
 
     res.json({
@@ -342,7 +333,6 @@ exports.scheduleVisit = async (req, res) => {
   }
 };
 
-
 // ================= MAKE PAYMENT =================
 
 exports.makePayment = async (req, res) => {
@@ -355,7 +345,7 @@ exports.makePayment = async (req, res) => {
         paymentStatus: "Paid",
         paymentDate: new Date(),
       },
-      { new: true },
+      { new: true }
     );
 
     if (!booking) {
@@ -368,6 +358,37 @@ exports.makePayment = async (req, res) => {
     res.json({
       status: true,
       message: "Payment completed successfully",
+      data: booking,
+    });
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      status: false,
+      message: err.message,
+    });
+  }
+};
+
+// ================= UPDATE REMARKS =================
+
+exports.updateRemarks = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    const { remarks } = req.body;
+
+    const booking = await Booking.findByIdAndUpdate(
+      bookingId,
+      {
+        remarks,
+      },
+      { new: true }
+    );
+
+    res.json({
+      status: true,
+      message: "Remarks updated successfully",
       data: booking,
     });
   } catch (err) {

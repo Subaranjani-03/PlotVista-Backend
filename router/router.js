@@ -49,11 +49,18 @@ router.put("/bookings/cancel/:id", bookingController.cancelBooking);
 router.get("/bookings", bookingController.getAllBookings); // ADMIN BOOKINGS
 router.get("/bookings/agent/:agentId", bookingController.getAgentBookings); // AGENT BOOKINGS
 router.get("/agent-customers/:agentId", bookingController.getAgentCustomers);
-router.put("/bookings/assign-agent/:id", bookingController.assignAgentToBooking);
+router.put(
+  "/bookings/assign-agent/:id",
+  bookingController.assignAgentToBooking,
+);
 router.put("/bookings/visit-status/:id", bookingController.updateVisitStatus);
 router.put("/bookings/schedule-visit/:id", bookingController.scheduleVisit); //SCHEDULE
 
 //PAYMENT
 router.put("/bookings/payment/:id", bookingController.makePayment);
+
+//REMARKS
+router.put("/bookings/remarks/:id", bookingController.updateRemarks);
+
 
 module.exports = router;
