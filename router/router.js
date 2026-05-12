@@ -56,11 +56,14 @@ router.put(
 router.put("/bookings/visit-status/:id", bookingController.updateVisitStatus);
 router.put("/bookings/schedule-visit/:id", bookingController.scheduleVisit); //SCHEDULE
 
+
+// BOOKING STATUS
+router.put("/bookings/status/:id", bookingController.updateBookingStatus);
+
 //PAYMENT
 router.put("/bookings/payment/:id", bookingController.makePayment);
 
 //REMARKS
 router.put("/bookings/remarks/:id", bookingController.updateRemarks);
-
 
 module.exports = router;
