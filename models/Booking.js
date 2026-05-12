@@ -44,7 +44,7 @@ const bookingSchema = new mongoose.Schema(
 
     visitStatus: {
       type: String,
-      enum: ["Pending", "Visited", "Not Visited"],
+      enum: ["Pending", "Visited"],
       default: "Pending",
     },
 
