@@ -5,7 +5,7 @@ const User = require("../models/User");
 
 exports.createPlot = async (req, res) => {
   try {
-    console.log("FILES RECEIVED:", req.files);
+    // console.log("FILES RECEIVED:", req.files);
 
     const files = req.files || [];
 
@@ -48,7 +48,9 @@ exports.getPlots = async (req, res) => {
       const obj = plot.toObject();
 
       obj.documents = (obj.documents || []).map((doc) =>
-        doc.startsWith("http") ? doc : `http://localhost:6999/${doc}`,
+        doc.startsWith("http")
+          ? doc
+          : `${process.env.BASE_URL || "http://localhost:6999"}/${doc}`,
       );
 
       return obj;
