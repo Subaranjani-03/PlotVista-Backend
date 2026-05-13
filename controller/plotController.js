@@ -34,6 +34,7 @@ exports.createPlot = async (req, res) => {
       message: err.message,
     });
   }
+  console.log("FILES RECEIVED:", req.files);
 };
 
 exports.getPlots = async (req, res) => {
