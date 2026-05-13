@@ -5,6 +5,10 @@ const User = require("../models/User");
 
 exports.createPlot = async (req, res) => {
   try {
+
+     console.log("FILES RECEIVED:", req.files);
+
+     
     const files = req.files || [];
 
     const filePaths = files.map((file) => file.path);
@@ -34,7 +38,7 @@ exports.createPlot = async (req, res) => {
       message: err.message,
     });
   }
-  console.log("FILES RECEIVED:", req.files);
+
 };
 
 exports.getPlots = async (req, res) => {
