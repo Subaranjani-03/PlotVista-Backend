@@ -358,7 +358,7 @@ exports.scheduleVisit = async (req, res) => {
       bookingId,
       {
         visitDate: formattedDate,
-        status: "Scheduled",
+        // status: "Scheduled",
       },
       { new: true },
     );
@@ -408,7 +408,7 @@ exports.makePayment = async (req, res) => {
 
     booking.paymentDate = new Date();
 
-    booking.status = "Approved";
+    // booking.status = "Approved";
 
     await booking.save();
 
