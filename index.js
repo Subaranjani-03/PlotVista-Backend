@@ -3,6 +3,10 @@ require("dotenv").config(); //dotnev
 const express = require("express");
 const app = express();
 const port = 6999;
+
+const path = require("path");
+
+
 const db = require("./dbconfig/config");
 const router = require("./router/router");
 const cors = require("cors");
@@ -24,6 +28,8 @@ app.use(
 /* ================= BODY PARSER ================= */
 
 app.use(express.json());
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 /* ================= ROUTES ================= */
 
