@@ -17,14 +17,13 @@ app.use(
   cors({
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "key"],
-  })
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
 );
 
 /* ================= BODY PARSER ================= */
 
 app.use(express.json());
-
 
 /* ================= ROUTES ================= */
 
