@@ -514,10 +514,13 @@ exports.updateBookingStatus = async (req, res) => {
 
     // ================= PENDING / ASSIGNED / SCHEDULED =================
 
+    // ================= PENDING / ASSIGNED / SCHEDULED / CONFIRMED =================
+
     if (
       status === "Pending" ||
       status === "Assigned" ||
-      status === "Scheduled"
+      status === "Scheduled" ||
+      status === "Confirmed"
     ) {
       await Plot.findByIdAndUpdate(booking.plotId, {
         status: "Booked",
