@@ -5,7 +5,6 @@ const User = require("../models/User");
 
 exports.createPlot = async (req, res) => {
   try {
-
     const files = req.files || [];
 
     const filePaths = files.map((file) => file.path);
@@ -16,10 +15,7 @@ exports.createPlot = async (req, res) => {
     };
 
     // FIX
-    if (
-      plotData.assignedAgent === "null" ||
-      plotData.assignedAgent === ""
-    ) {
+    if (plotData.assignedAgent === "null" || plotData.assignedAgent === "") {
       plotData.assignedAgent = null;
     }
 
@@ -32,14 +28,11 @@ exports.createPlot = async (req, res) => {
       message: "Plot created successfully",
       data: plot,
     });
-
   } catch (err) {
-
     res.json({
       status: false,
       message: err.message,
     });
-
   }
 };
 
@@ -53,7 +46,7 @@ exports.getPlots = async (req, res) => {
       const obj = plot.toObject();
 
       obj.documents = (obj.documents || []).map(
-        (doc) => `http://localhost:6999/${doc.replace(/\\/g, "/")}`
+        (doc) => `http://localhost:6999/uploads/${doc}`,
       );
 
       return obj;
@@ -63,7 +56,6 @@ exports.getPlots = async (req, res) => {
       status: true,
       data: updatedPlots,
     });
-
   } catch (err) {
     res.json({
       status: false,
@@ -88,7 +80,7 @@ exports.updatePlot = async (req, res) => {
     }
 
     if (files.length > 0) {
-      const filePaths = files.map((file) => file.path);
+      const filePaths = files.map((file) => file.filename);
       updateData.documents = filePaths;
     }
 
