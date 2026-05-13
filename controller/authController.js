@@ -301,9 +301,16 @@ exports.updateAgent = async (req, res) => {
   try {
     const agentId = req.params.id;
 
+    const updateData = { ...req.body };
+
+    // 🚨 REMOVE PASSWORD IF EMPTY OR NOT GIVEN
+    if (!updateData.password) {
+      delete updateData.password;
+    }
+
     const updatedAgent = await User.findOneAndUpdate(
       { _id: agentId, role: "agent" },
-      req.body,
+      updateData,
       { new: true },
     );
 
