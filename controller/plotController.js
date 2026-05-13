@@ -5,13 +5,11 @@ const User = require("../models/User");
 
 exports.createPlot = async (req, res) => {
   try {
+    console.log("FILES RECEIVED:", req.files);
 
-     console.log("FILES RECEIVED:", req.files);
-
-     
     const files = req.files || [];
 
-    const filePaths = files.map((file) => file.path);
+    const filePaths = files.map((file) => `uploads/${file.filename}`);
 
     const plotData = {
       ...req.body,
@@ -38,7 +36,6 @@ exports.createPlot = async (req, res) => {
       message: err.message,
     });
   }
-
 };
 
 exports.getPlots = async (req, res) => {
@@ -50,8 +47,8 @@ exports.getPlots = async (req, res) => {
     const updatedPlots = plots.map((plot) => {
       const obj = plot.toObject();
 
-      obj.documents = (obj.documents || []).map(
-        (doc) => `http://localhost:6999/uploads/${doc}`,
+      obj.documents = (obj.documents || []).map((doc) =>
+        doc.startsWith("http") ? doc : `http://localhost:6999/${doc}`,
       );
 
       return obj;
@@ -85,7 +82,7 @@ exports.updatePlot = async (req, res) => {
     }
 
     if (files.length > 0) {
-      const filePaths = files.map((file) => file.filename);
+      const filePaths = files.map((file) => `uploads/${file.filename}`);
       updateData.documents = filePaths;
     }
 
