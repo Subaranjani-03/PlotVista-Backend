@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
 
@@ -31,12 +32,15 @@ exports.register = async (req, res) => {
       });
     }
 
+     // 🔐 STEP: HASH PASSWORD
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = new User({
       userId: generateUserId("user"),
       name,
       phone,
       email,
-      password,
+      password: hashedPassword, // IMPORTANT CHANGE
       address,
       role: "user",
       status: "active",
@@ -62,8 +66,12 @@ exports.login = async (req, res) => {
   try {
     const { phone, password, role } = req.body;
 
-    // DEFAULT ADMIN
-    if (role === "admin" && phone === "9999999999" && password === "admin123") {
+    // DEFAULT ADMIN (unchanged)
+    if (
+      role === "admin" &&
+      phone === "9999999999" &&
+      password === "admin123"
+    ) {
       return res.json({
         status: true,
         message: "Admin Login Successful",
@@ -76,12 +84,23 @@ exports.login = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ phone, password, role });
+    // 🔍 FIND USER BY PHONE + ROLE ONLY
+    const user = await User.findOne({ phone, role });
 
     if (!user) {
       return res.json({
         status: false,
         message: "Invalid credentials or role",
+      });
+    }
+
+    // 🔐 COMPARE PASSWORD USING BCRYPT
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.json({
+        status: false,
+        message: "Invalid password",
       });
     }
 
@@ -97,6 +116,7 @@ exports.login = async (req, res) => {
       message: "Login Successful",
       data: user,
     });
+
   } catch (err) {
     res.json({
       status: false,
@@ -104,6 +124,7 @@ exports.login = async (req, res) => {
     });
   }
 };
+
 
 // ======================================
 // USER APIs
