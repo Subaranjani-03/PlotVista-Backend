@@ -2,16 +2,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
-
 const generateUserId = (role) => {
   const uniquePart = Date.now().toString().slice(-6);
 
-  return role === "agent"
-    ? `AGT-${uniquePart}`
-    : `USR-${uniquePart}`;
+  return role === "agent" ? `AGT-${uniquePart}` : `USR-${uniquePart}`;
 };
-
-
 
 // ======================================
 // AUTH APIs (REGISTER / LOGIN)
@@ -33,7 +28,7 @@ exports.register = async (req, res) => {
       });
     }
 
-     // 🔐 STEP: HASH PASSWORD
+    // 🔐 STEP: HASH PASSWORD
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
@@ -67,15 +62,22 @@ exports.login = async (req, res) => {
   try {
     const { phone, password, role } = req.body;
 
-    // DEFAULT ADMIN (unchanged)
-    if (
-      role === "admin" &&
-      phone === "9999999999" &&
-      password === "admin123"
-    ) {
+    // =========================
+    // DEFAULT ADMIN LOGIN
+    // =========================
+    if (role === "admin" && phone === "9999999999" && password === "admin123") {
+      const token = jwt.sign(
+        {
+          role: "admin",
+          phone: "9999999999",
+        },
+        process.env.JWT_SECRET,
+      );
+
       return res.json({
         status: true,
         message: "Admin Login Successful",
+        token,
         data: {
           name: "Admin",
           phone: "9999999999",
@@ -85,7 +87,9 @@ exports.login = async (req, res) => {
       });
     }
 
-    // 🔍 FIND USER BY PHONE + ROLE ONLY
+    // =========================
+    // NORMAL USER / AGENT LOGIN
+    // =========================
     const user = await User.findOne({ phone, role });
 
     if (!user) {
@@ -95,7 +99,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    // 🔐 COMPARE PASSWORD USING BCRYPT
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -112,42 +115,39 @@ exports.login = async (req, res) => {
       });
     }
 
-    // CREATE JWT TOKEN
-const token = jwt.sign(
-  {
-    id: user._id,
-    role: user.role,
-    phone: user.phone,
-  },
-  process.env.JWT_SECRET,
-  {
-    expiresIn: "7d",
-  }
-);
+    // =========================
+    // CREATE TOKEN (NO EXPIRY)
+    // =========================
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+        phone: user.phone,
+      },
+      process.env.JWT_SECRET,
+    );
 
-res.json({
-  status: true,
-  message: "Login Successful",
-  token, // SEND TOKEN
-  data: {
-    _id: user._id,
-    userId: user.userId,
-    name: user.name,
-    phone: user.phone,
-    email: user.email,
-    role: user.role,
-    status: user.status,
-  },
-});
-
+    return res.json({
+      status: true,
+      message: "Login Successful",
+      token,
+      data: {
+        _id: user._id,
+        userId: user.userId,
+        name: user.name,
+        phone: user.phone,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      },
+    });
   } catch (err) {
-    res.json({
+    return res.json({
       status: false,
       message: err.message,
     });
   }
 };
-
 
 // ======================================
 // USER APIs
@@ -288,7 +288,6 @@ exports.createAgent = async (req, res) => {
       message: "Agent Created",
       data: agent,
     });
-
   } catch (err) {
     res.json({
       status: false,
