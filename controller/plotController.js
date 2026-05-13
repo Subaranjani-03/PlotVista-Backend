@@ -49,10 +49,21 @@ exports.getPlots = async (req, res) => {
       .populate("assignedAgent", "name email phone")
       .sort({ createdAt: -1 });
 
+    const updatedPlots = plots.map((plot) => {
+      const obj = plot.toObject();
+
+      obj.documents = (obj.documents || []).map(
+        (doc) => `http://localhost:6999/${doc.replace(/\\/g, "/")}`
+      );
+
+      return obj;
+    });
+
     res.json({
       status: true,
-      data: plots,
+      data: updatedPlots,
     });
+
   } catch (err) {
     res.json({
       status: false,
