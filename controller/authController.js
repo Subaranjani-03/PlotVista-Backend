@@ -243,12 +243,15 @@ exports.createAgent = async (req, res) => {
       });
     }
 
+    // 🔐 HASH PASSWORD (IMPORTANT FIX)
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const agent = new User({
       userId: generateUserId("agent"),
       name,
       phone,
       email,
-      password,
+      password: hashedPassword, // ✅ FIXED
       address,
       experience,
       role: "agent",
@@ -262,6 +265,7 @@ exports.createAgent = async (req, res) => {
       message: "Agent Created",
       data: agent,
     });
+
   } catch (err) {
     res.json({
       status: false,
