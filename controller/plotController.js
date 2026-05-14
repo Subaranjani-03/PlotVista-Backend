@@ -9,7 +9,10 @@ exports.createPlot = async (req, res) => {
 
     const files = req.files || [];
 
-    const filePaths = files.map((file) => `uploads/${file.filename}`);
+    const filePaths = files.map(
+      (file) =>
+        `${process.env.BASE_URL || "http://localhost:6999"}/uploads/${file.filename}`,
+    );
 
     const plotData = {
       ...req.body,
@@ -47,12 +50,13 @@ exports.getPlots = async (req, res) => {
     const updatedPlots = plots.map((plot) => {
       const obj = plot.toObject();
 
-      obj.documents = (obj.documents || []).map((doc) =>
-        doc.startsWith("http")
-          ? doc
-          : `${process.env.BASE_URL || "http://localhost:6999"}/${doc}`,
-      );
+      obj.documents = (obj.documents || []).map((doc) => {
+        if (doc.startsWith("http")) {
+          return doc;
+        }
 
+        return `${process.env.BASE_URL}${doc.startsWith("/") ? "" : "/"}${doc}`;
+      });
       return obj;
     });
 
@@ -84,7 +88,10 @@ exports.updatePlot = async (req, res) => {
     }
 
     if (files.length > 0) {
-      const filePaths = files.map((file) => `uploads/${file.filename}`);
+      const filePaths = files.map(
+        (file) =>
+          `${process.env.BASE_URL || "http://localhost:6999"}/uploads/${file.filename}`,
+      );
       updateData.documents = filePaths;
     }
 
