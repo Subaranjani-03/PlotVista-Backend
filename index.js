@@ -6,7 +6,6 @@ const port = 6999;
 
 const path = require("path");
 
-
 const db = require("./dbconfig/config");
 const router = require("./router/router");
 const cors = require("cors");
@@ -19,7 +18,7 @@ const verifyToken = require("./middleware/authMiddleware");
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://your-frontend-name.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
