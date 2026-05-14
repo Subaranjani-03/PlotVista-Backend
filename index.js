@@ -18,7 +18,7 @@ const verifyToken = require("./middleware/authMiddleware");
 
 app.use(
   cors({
-    origin: "https://your-frontend-name.vercel.app",
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
