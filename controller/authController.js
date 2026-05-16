@@ -303,7 +303,7 @@ exports.updateAgent = async (req, res) => {
 
     const updateData = { ...req.body };
 
-    // 🚨 REMOVE PASSWORD IF EMPTY OR NOT GIVEN
+    // REMOVE PASSWORD IF EMPTY OR NOT GIVEN
     if (!updateData.password) {
       delete updateData.password;
     }
